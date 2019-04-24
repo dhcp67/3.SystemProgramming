@@ -16,15 +16,18 @@ int main() {
     char hostname[100];
     char *username = getenv("LOGNAME");
     gethostname(hostname,sizeof(hostname));
-    char *pwd =getenv("PWD");
+    char pwd[100];
     char com[50];
-    char secim[100];
+    char secom[100];
     while(strcmp(com, "exit")) {
+        tcwd(pwd,100);
         printtype_user_root(username, hostname, pwd);
-
+        if(strcmp(com, "cd")) {
+            chdir("~");
+        }
         memset(com, 0, 50);
         scanf("%s", com);
-	scanf("%s", secom);
+        scanf("%s", secom);
     } 
 
 	return 0;
@@ -35,10 +38,5 @@ void printtype_user_root(char *username, char *hostname,char *pwd) {
     int cnt = 0, ret = 3,i = 0;
         printf("\033[32;1m%s@%s\033[0m:\033[34;1m%s\033[0m", username, hostname, pwd);
         strcmp(username, "root") ? printf("# "): printf("$ "); 
-}
-                if (ret) result = ERROR_WRONG_PARAMETER;
-        }
-
-        return result;
 }
         
