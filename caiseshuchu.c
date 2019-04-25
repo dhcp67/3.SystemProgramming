@@ -18,10 +18,13 @@ int main() {
     gethostname(hostname,sizeof(hostname));
     char *pwd =getenv("PWD");
     char com[50];
+    char secim[100];
     while(strcmp(com, "exit")) {
         printtype_user_root(username, hostname, pwd);
+
         memset(com, 0, 50);
-        scanf("%s[^\n]", com);
+        scanf("%s", com);
+	scanf("%s", secom);
     } 
 
 	return 0;
@@ -33,4 +36,9 @@ void printtype_user_root(char *username, char *hostname,char *pwd) {
         printf("\033[32;1m%s@%s\033[0m:\033[34;1m%s\033[0m", username, hostname, pwd);
         strcmp(username, "root") ? printf("# "): printf("$ "); 
 }
+                if (ret) result = ERROR_WRONG_PARAMETER;
+        }
 
+        return result;
+}
+        
