@@ -20,7 +20,7 @@ int main() {
     gethostname(hostname,sizeof(hostname));
     char pwd[100] = {0};
     char com[500] = {0};
-    char secom[1000] = {0};
+    char secom[500] = {0};
     int ret = 1;
     while(strcmp(com, "exit")) {
         if(!strcmp(com, "cd")) {
@@ -31,8 +31,8 @@ int main() {
         ret && getcwd(pwd,100);
         ret--;
         printtype_user_root(username, hostname, pwd);
-        memset(com, 0, 49);
-        memset(secom, 0, 99);
+        memset(com, 0, 500);
+        memset(secom, 0, 500);
         gets(com);
         //scanf("%s[^\n]", com);
         //getchar();
