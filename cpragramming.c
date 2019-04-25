@@ -12,6 +12,7 @@
 
 void printtype_user_root(char *,char *, char *);
 void second_com(char com[], char secom[], char *temp);
+void pwd_now(char se[], char *te);
 
 int main() {
     char hostname[100];
@@ -19,7 +20,7 @@ int main() {
     gethostname(hostname,sizeof(hostname));
     char pwd[100] = {0};
     char com[500] = {0};
-    char secom[500] = {0};
+    char secom[1000] = {0};
     int ret = 1;
     while(strcmp(com, "exit")) {
         if(!strcmp(com, "cd")) {
@@ -61,5 +62,17 @@ void second_com(char com[], char secom[], char *temp) {
             com[i] = 0;
         }
     }
-    !strcmp(com, "cd") && !strcmp(secom, "~") && sprintf(secom, "/home/%s",temp);
-}        
+    if(!strcmp(com, "cd") && (secom[0] == '~')) {
+        pwd_now(secom, temp);
+    }
+}
+
+void pwd_now(char se[], char *te) {
+    int len = strlen(se);
+    char swap[1000] = {0};
+    sprintf(swap, "/home/%s", te);    
+    for(int i = 1; i < len; i++) {
+        sprintf(swap, "%s%c", swap, se[i]);
+    }
+    strcpy(se, swap);
+}
