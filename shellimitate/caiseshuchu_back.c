@@ -11,18 +11,19 @@
 #include <string.h>
 
 void printtype_user_root(char *,char *, char *);
-void second_com(char com[], char secom[], char *temp);
-void pwd_now(char se[], char *te);
+void second_com(char com[], char secom[], char temp[]);
+void pwd_now(char se[], char te[]);
 
 int main() {
-    char hostname[100];
-    char *username = getenv("LOGNAME");
-    gethostname(hostname,sizeof(hostname));
+    char hostname[100] = {0};
+    char username[100] = {0};
     char pwd[100] = {0};
     char com[500] = {0};
     char secom[500] = {0};
+    strcpy(username,getenv("LOGNAME"));
+    gethostname(hostname,sizeof(hostname));
     int ret = 1;
-    while(strcmp(com, "exit")) {
+    do {
         if(!strcmp(com, "cd")) {
             if(!chdir(secom)) {
                 ret = 1;
@@ -37,7 +38,7 @@ int main() {
         //scanf("%s[^\n]", com);
         //getchar();
         second_com(com, secom, username); 
-    } 
+    } while(strcmp(com, "exit"));
 
 	return 0;
 
@@ -49,7 +50,7 @@ void printtype_user_root(char *username, char *hostname,char *pwd) {
         strcmp(username, "root") ? printf("$"): printf("#"); 
 }
 
-void second_com(char com[], char secom[], char *temp) {
+void second_com(char com[], char secom[], char temp[]) {
     int len = strlen(com);
     int ret = 0, j = 0;
     for(int i = 0; i < len; i++) {
@@ -67,7 +68,7 @@ void second_com(char com[], char secom[], char *temp) {
     }
 }
 
-void pwd_now(char se[], char *te) {
+void pwd_now(char se[], char te[]) {
     int len = strlen(se);
     char swap[1000] = {0};
     sprintf(swap, "/home/%s", te);    
