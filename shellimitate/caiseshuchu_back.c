@@ -9,19 +9,21 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#define len_size 200
 
 void printtype_user_root(char *,char *, char *);
 void second_com(char com[], char secom[], char temp[]);
 void pwd_now(char se[], char te[]);
 
 int main() {
-    char hostname[100] = {0};
-    char username[100] = {0};
-    char pwd[100] = {0};
-    char com[500] = {0};
-    char secom[500] = {0};
+    char hostname[len_size] = {0};
+    char username[len_size] = {0};
+    char pwd[len_size] = {0};
+    char com[len_size] = {0};
+    char secom[len_size] = {0};
     strcpy(username,getenv("LOGNAME"));
-    gethostname(hostname,sizeof(hostname));
+    scanf("%[^\n]", com);
+    getchar();
     int ret = 1;
     do {
         if(!strcmp(com, "cd")) {
@@ -29,12 +31,12 @@ int main() {
                 ret = 1;
             }
         }
-        ret && getcwd(pwd,100);
+        ret && getcwd(pwd,len_size);
         ret--;
         printtype_user_root(username, hostname, pwd);
-        memset(com, 0, 500);
-        memset(secom, 0, 500);
-        gets(com);
+        memset(com, 0, len_size);
+        memset(secom, 0, len_size);
+        fgets(com, len_size, stdin);
         //scanf("%s[^\n]", com);
         //getchar();
         second_com(com, secom, username); 

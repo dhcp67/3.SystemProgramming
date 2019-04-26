@@ -33,9 +33,9 @@ int main() {
         printtype_user_root(username, hostname, pwd);
         memset(com, 0, 49);
         memset(secom, 0, 99);
-        gets(com);
-        //scanf("%s[^\n]", com);
-        //getchar();
+        scanf("%[^\n]", com);
+        getchar();
+        printf("%s\n", com);
         second_com(com, secom, username); 
     } 
 
