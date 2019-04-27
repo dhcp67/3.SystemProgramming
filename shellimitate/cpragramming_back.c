@@ -52,7 +52,9 @@ int main() {
 void printtype_user_root(char *username, char *hostname,char *pwd) {
     printf("\033[32;1m%s@%s\033[0m:", username, hostname);
     int digit = -3;
-    for(int i = 0; i < strlen(pwd); i++) {
+    if(prinout == 3) {
+        printf("\033[34;1m%s/\033[0m", pwd);
+    }else {for(int i = 0; i < strlen(pwd); i++) {
         if (!i) {
             if(prinout == 2) {
                 printf("\033[34;1m/\033[0m");
@@ -68,8 +70,9 @@ void printtype_user_root(char *username, char *hostname,char *pwd) {
             digit++;
         }
     }
+    }
     prinout = 0;
-    strcmp(username, "root") ? printf("$") : printf("#");
+    strcmp(username, "root") ? printf("$ ") : printf("# ");
 }
 
 int second_com(char com[], char secom[], char *temp) {
@@ -89,9 +92,13 @@ int second_com(char com[], char secom[], char *temp) {
     }
     if(!strcmp(com, "cd") && (secom[0] == '-')) {
         cnt = (!cnt);
-    } else if(!strcmp(com, "cd") && (secom[0] == '/')) {
+    } else if(!strcmp(com, "cd") && (secom[0] == '/' && (secom[1] == ' ' ||
+            secom[1] == 0))) {
         prinout = 2;
-    } else if(!strcmp(com, "cd") && (secom[0] == '~')) {
+            } else if(!strcmp(com, "cd") && (secom[0] == '/')) {
+                prinout = 3;
+            }
+    else if(!strcmp(com, "cd") && (secom[0] == '~')) {
         pwd_now(secom, temp);
         prinout = 1;
     } else if(!strcmp(com, "cd") && secom[0] == 0) {
