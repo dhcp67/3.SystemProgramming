@@ -8,7 +8,9 @@
 #include <signal.h> 
 #include <stdio.h>
 #include <stdlib.h>
+#include <sys/types.h>
 #include <unistd.h>
+#include <pwd.h>
 #include <string.h>
 #define LEN 256
 
@@ -21,7 +23,11 @@ char pwd[LEN];
 
 int main() {
     //signal(SIGINT, SIG_IGN);
-    gethostname(hostname,sizeof(hostname));
+    struct passwd *p;
+    p = getpwuid(getuid());
+    strcpy(username, p->pw_name);
+    strcpy(pwd, p->pw_dir);
+    printf("%s\n", p->pw_name);
     char com[LEN];
     int len = 0;
     getcwd(pwd,100);
