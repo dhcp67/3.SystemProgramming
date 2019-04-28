@@ -27,10 +27,11 @@ int main() {
     p = getpwuid(getuid());
     strcpy(username, p->pw_name);
     strcpy(pwd, p->pw_dir);
-    printf("%s\n", p->pw_name);
+    gethostname(hostname, LEN);
+    printf("%s\n", hostname);
+    
     char com[LEN];
     int len = 0;
-    getcwd(pwd,100);
     while(strcmp(secom[0], "exit")) {
         fgets(com, LEN, stdin);
         len = secondcom_com(com);
