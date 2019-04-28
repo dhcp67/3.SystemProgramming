@@ -37,7 +37,7 @@ int main() {
 
 int secondcom_com(char *com) {
     int ret = 0, i, j = 0;
-    int len = strlen(com);
+    int len = strlen(com) - 1;
     for(i = 0; i < len; i++) {
         if(com[i] != ' ') {
             secom[j][ret++] = com[i];
@@ -47,14 +47,10 @@ int secondcom_com(char *com) {
             ret = 0;
         }
     }
-    len = i;
     if(ret) {
-        secom[j][ret - 1] = 'S';//<-test;
         secom[j][ret] = '\0';
+        j++;
     }
-    secom[j + 1][0] = '\0';
-    for(i = 0; i < len; i++) {
-        printf("%s\n", secom[i]);
-    }
+    len = j;
     return len;
 }
