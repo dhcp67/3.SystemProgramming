@@ -16,10 +16,13 @@
 
 char secom[LEN][LEN];
 
-int secondcom_com(char *);
 char hostname[LEN];
 char username[LEN];
 char pwd[LEN];
+
+int sec_command(int);//命令拆分
+int cd_lscom(char secom[][LEN]);//命令区分
+int print_command(int concom);//输出
 
 int main() {
     //signal(SIGINT, SIG_IGN);
@@ -28,21 +31,20 @@ int main() {
     strcpy(username, p->pw_name);
     strcpy(pwd, p->pw_dir);
     gethostname(hostname, LEN);
-    printf("%s\n", hostname);
-    
+
     char com[LEN];
     int len = 0;
     while(strcmp(secom[0], "exit")) {
+        int scom = cd_lscom(secom);
+        print_command(scom);
         fgets(com, LEN, stdin);
         len = secondcom_com(com);
-        printf("<-\n");
     } 
 
 	return 0;
-
 }
 
-int secondcom_com(char *com) {
+int sec_com(char *com) {
     int ret = 0, i, j = 0;
     int len = strlen(com) - 1;
     for(i = 0; i < len; i++) {
@@ -60,4 +62,17 @@ int secondcom_com(char *com) {
     }
     len = j;
     return len;
+}
+
+int cd_lscomc(char scom[][LEN]) {
+    int concom = 0;
+    if(!strcmp(secom[0], "cd")) {//如果命令是cd
+        
+    } else if(!strcmp(secom[0], "ls")) {//如果命令是ls
+
+     }
+    return concom;
+}
+int print_command(int concom) {
+    return 0;
 }
