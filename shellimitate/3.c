@@ -19,8 +19,21 @@ char secom[LEN][LEN];
 char hostname[LEN];
 char username[LEN];
 char pwd[LEN];
+char tempwd[2][LEN];
+int pwdflag = 1;
 
-int sec_command(int);//命令拆分
+enum {
+    EXIT,
+    ERROR,
+    CD,
+    CD_PREVIOUS,//cd - previous occasion
+    CD_home,
+    CD_HOME,
+    LS,
+    LS_AL
+};
+
+int sec_com(char *);//命令拆分
 int cd_lscom(char secom[][LEN]);//命令区分
 int print_command(int concom);//输出
 
@@ -29,16 +42,17 @@ int main() {
     struct passwd *p;
     p = getpwuid(getuid());
     strcpy(username, p->pw_name);
-    strcpy(pwd, p->pw_dir);
+    //strcpy(pwd, p->pw_dir);
+    strcpy(pwd, getenv("PWD"));
     gethostname(hostname, LEN);
 
     char com[LEN];
-    int len = 0;
-    while(strcmp(secom[0], "exit")) {
-        int scom = cd_lscom(secom);
-        print_command(scom);
+    int len = 0, ret = CD;
+    while(ret != EXIT) {
+        print_command(ret);
         fgets(com, LEN, stdin);
-        len = secondcom_com(com);
+        len = sec_com(com);
+        ret = cd_lscom(secom);
     } 
 
 	return 0;
@@ -64,15 +78,43 @@ int sec_com(char *com) {
     return len;
 }
 
-int cd_lscomc(char scom[][LEN]) {
+int cd_lscom(char scom[][LEN]) {
     int concom = 0;
-    if(!strcmp(secom[0], "cd")) {//如果命令是cd
-        
-    } else if(!strcmp(secom[0], "ls")) {//如果命令是ls
-
-     }
+    if(strcmp(secom[0], "cd") == 0) {//如果命令是cd
+             if((strcmp(secom[1], "~") && secom[2] == "\0") || secom[1] == "\0") {
+                sprintf(secom[1], "/home/%s", username);
+             } else if(strcmp(secom[1], "-") == 0) {
+                 strcpy(secom[1], tempwd[pwdflag]);
+             }
+            concom = CD;
+    } else if(strcmp(secom[0], "ls") == 0) {//如果命令是ls
+        if(!strcmp(secom[1], "-al")) {
+            concom = LS_AL;
+        } else {
+            concom = LS;
+        }
+    } else if(strcmp(secom[0], "exit") == 0 && secom[1] == "\0") {
+        concom = EXIT;
+    } else{
+        concom = CD;    
+    }
+    if(chdir(secom[1]) == 0 && strcmp(secom[1], tempwd[pwdflag]) != 0) {
+        strcpy(tempwd[pwdflag], secom[1]);
+        pwdflag = !pwdflag;
+    }
     return concom;
 }
 int print_command(int concom) {
+    char home[LEN];
+    sprintf(home,"/home/%s", username);
+    if(concom == CD) {
+        printf("\033[32;1m%s@%s\033[0m:\033[34;1m%s\033[0m", username, hostname, pwd);
+        if(strcmp(username, "root") == 0) {
+            printf("# ");
+        } else {
+            printf("$ ");
+        }
+        
+    }
     return 0;
 }
