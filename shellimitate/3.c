@@ -15,7 +15,6 @@
 #define LEN 256
 
 char secom[LEN][LEN];
-
 char hostname[LEN];
 char username[LEN];
 char pwd[LEN];
@@ -79,14 +78,23 @@ int sec_com(char *com) {
 }
 
 int cd_lscom(char scom[][LEN]) {
-    int concom = 0;
+    int concom = -1;
     if(strcmp(secom[0], "cd") == 0) {//如果命令是cd
-             if((strcmp(secom[1], "~") && secom[2] == "\0") || secom[1] == "\0") {
-                sprintf(secom[1], "/home/%s", username);
+             if((strcmp(secom[1], "~") == 0 && secom[2] == "\0") || secom[1] == "\0") {
+                sprintf(pwd, "/home/%s", username);
              } else if(strcmp(secom[1], "-") == 0) {
-                 strcpy(secom[1], tempwd[pwdflag]);
+                 strcpy(tempwd[pwdflag], pwd);
+                 pwdflag = !pwdflag;
+                 strcpy(pwd, tempwd[pwdflag]);
+             } else{
+                 strcpy(pwd, secom[1]);
              }
             concom = CD;
+        if(chdir(pwd) == 0 && strcmp(pwd, tempwd[pwdflag]) != 0) {
+            strcpy(tempwd[pwdflag], pwd);
+            pwdflag = !pwdflag;
+        }
+        strcpy(pwd, secom[1]);
     } else if(strcmp(secom[0], "ls") == 0) {//如果命令是ls
         if(!strcmp(secom[1], "-al")) {
             concom = LS_AL;
@@ -98,10 +106,7 @@ int cd_lscom(char scom[][LEN]) {
     } else{
         concom = CD;    
     }
-    if(chdir(secom[1]) == 0 && strcmp(secom[1], tempwd[pwdflag]) != 0) {
-        strcpy(tempwd[pwdflag], secom[1]);
-        pwdflag = !pwdflag;
-    }
+    printf("%s\n", secom[1]);
     return concom;
 }
 int print_command(int concom) {
@@ -116,5 +121,5 @@ int print_command(int concom) {
         }
         
     }
-    return 0;
+    return concom;
 }
