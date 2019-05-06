@@ -60,6 +60,7 @@ int main() {
 int sec_com(char *com) {
     int ret = 0, i, j = 0;
     int len = strlen(com) - 1;
+    printf("%d\n",len);
     for(i = 0; i < len; i++) {
         if(com[i] != ' ') {
             secom[j][ret++] = com[i];
@@ -74,6 +75,7 @@ int sec_com(char *com) {
         j++;
     }
     len = j;
+    printf(" com = %s<-\nsecom[0] = %s<-\nsecom[1] = %s<-\n secom[3] = %s<-\n", com, secom[0], secom[1], secom[2]);//<<<----
     return len;
 }
 
@@ -118,6 +120,9 @@ int print_command(int concom) {
             printf("$ ");
         }
         
+    }
+    for(int i = 0; i < LEN; i++) {
+        strcpy(secom[i],"\0");
     }
     return concom;
 }
