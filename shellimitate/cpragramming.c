@@ -52,25 +52,27 @@ int main() {
 void printtype_user_root(char *username, char *hostname,char *pwd) {
     printf("\033[32;1m%s@%s\033[0m:", username, hostname);
     int digit = -3;
-    if(prinout == 3) {
-        printf("\033[34;1m%s/\033[0m", pwd);
-    }else {for(int i = 0; i < strlen(pwd); i++) {
-        if (!i) {
-            if(prinout == 2) {
-                printf("\033[34;1m/\033[0m");
-            }else if(prinout == 1) { 
-                printf("\033[34;1m~\033[0m");
-            } else  {
-                printf("\033[34;1m~/\033[0m");
-            }
-        }
-        if(digit == 0) {
-            printf("\033[34;1m%c\033[0m", pwd[i]);
-        } else if(pwd[i] == '/') {
-            digit++;
-        }
-    }
-    }
+        printf("\033[34;1m%s\033[0m", pwd);
+    
+    //if(prinout == 3) {
+    //    printf("\033[34;1m%s/\033[0m", pwd);
+    //}else {for(int i = 0; i < strlen(pwd); i++) {
+    //    if (!i) {
+    //        if(prinout == 2) {
+    //            printf("\033[34;1m/\033[0m");
+    //        }else if(prinout == 1) { 
+    //            printf("\033[34;1m~\033[0m");
+    //        } else  {
+    //            printf("\033[34;1m~/\033[0m");
+    //        }
+    //    }
+    //    if(digit == 0) {
+    //        printf("\033[34;1m%c\033[0m", pwd[i]);
+    //    } else if(pwd[i] == '/') {
+    //        digit++;
+    //    }
+    //}
+    //}
     prinout = 0;
     strcmp(username, "root") ? printf("$ ") : printf("# ");
 }
@@ -79,8 +81,11 @@ int second_com(char com[], char secom[], char *temp) {
     ret = (!ret);
     int len = strlen(com);
     int n = 0, j = 0;
-    int cnt = 0;
+    int cnt = 0, int comlag = 1;
     for(int i = 0; i < len; i++) {
+        if(com[i] == " ") {
+            comlag = 0;
+        }
         if(n) {
             secom[j] = com[i];
             com[i] = 0;
@@ -90,21 +95,21 @@ int second_com(char com[], char secom[], char *temp) {
             com[i] = 0;
         }
     }
-    if(!strcmp(com, "cd") && (secom[0] == '-')) {
-        cnt = (!cnt);
-    } else if(!strcmp(com, "cd") && (secom[0] == '/' && (secom[1] == ' ' ||
-            secom[1] == 0))) {
-        prinout = 2;
-            } else if(!strcmp(com, "cd") && (secom[0] == '/')) {
-                prinout = 3;
-            }
-    else if(!strcmp(com, "cd") && (secom[0] == '~')) {
-        pwd_now(secom, temp);
-        prinout = 1;
-    } else if(!strcmp(com, "cd") && secom[0] == 0) {
-        sprintf(secom, "/home/%s", temp);
-        prinout = 1;
-    }
+    //if(!strcmp(com, "cd") && (secom[0] == '-')) {
+    //    cnt = (!cnt);
+    //} else if(!strcmp(com, "cd") && (secom[0] == '/' && (secom[1] == ' ' ||
+    //        secom[1] == 0))) {
+    //    prinout = 2;
+    //        } else if(!strcmp(com, "cd") && (secom[0] == '/')) {
+    //            prinout = 3;
+    //        }
+    //else if(!strcmp(com, "cd") && (secom[0] == '~')) {
+    //    pwd_now(secom, temp);
+    //    prinout = 1;
+    //} else if(!strcmp(com, "cd") && secom[0] == 0) {
+    //    sprintf(secom, "/home/%s", temp);
+    //    prinout = 1;
+    //}
     return cnt;
 }
 

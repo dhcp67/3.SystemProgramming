@@ -16,20 +16,23 @@ int second_com(char com[], char secom[], char *temp);
 void pwd_now(char se[], char *te);
 
 char opwd[2][100] = {0};
+char pwd[100] = {0};
 int ret = 0;
-int prinout = 0;
+int prinout = 1;
 
 int main() {
     signal(SIGINT, SIG_IGN);
     char hostname[100];
     char *username = getenv("LOGNAME");
     gethostname(hostname,sizeof(hostname));
-    char pwd[100] = {0};
     char com[500] = {0};
     char secom[300] = {0};
     int num = 0;
+    char test[100];
+    sprintf(test, "/home/%s", username);
     getcwd(pwd,100);
-    signal(SIGINT, SIG_IGN);
+    if (strcmp(pwd, test)) prinout = 0;
+    //printf("%s %s\n", test, pwd);
     while(strcmp(com, "exit")) {
         if(!strcmp(com, "cd")) {
             chdir(secom);
@@ -54,12 +57,16 @@ void printtype_user_root(char *username, char *hostname,char *pwd) {
     int digit = -3;
     if(prinout == 3) {
         printf("\033[34;1m%s/\033[0m", pwd);
-    }else {for(int i = 0; i < strlen(pwd); i++) {
+    } else if(prinout == 5) {
+        printf("\033[34;1m%s\033[0m", pwd); 
+    } else {for(int i = 0; i < strlen(pwd); i++) {
         if (!i) {
             if(prinout == 2) {
                 printf("\033[34;1m/\033[0m");
             }else if(prinout == 1) { 
                 printf("\033[34;1m~\033[0m");
+            } else if(prinout == 4) {
+                printf("\033[34;1m~/\033[0m");
             } else  {
                 printf("\033[34;1m~/\033[0m");
             }
@@ -76,7 +83,6 @@ void printtype_user_root(char *username, char *hostname,char *pwd) {
 }
 
 int second_com(char com[], char secom[], char *temp) {
-    ret = (!ret);
     int len = strlen(com);
     int n = 0, j = 0;
     int cnt = 0;
@@ -90,20 +96,34 @@ int second_com(char com[], char secom[], char *temp) {
             com[i] = 0;
         }
     }
-    if(!strcmp(com, "cd") && (secom[0] == '-')) {
-        cnt = (!cnt);
-    } else if(!strcmp(com, "cd") && (secom[0] == '/' && (secom[1] == ' ' ||
-            secom[1] == 0))) {
-        prinout = 2;
-            } else if(!strcmp(com, "cd") && (secom[0] == '/')) {
-                prinout = 3;
-            }
-    else if(!strcmp(com, "cd") && (secom[0] == '~')) {
-        pwd_now(secom, temp);
-        prinout = 1;
-    } else if(!strcmp(com, "cd") && secom[0] == 0) {
-        sprintf(secom, "/home/%s", temp);
-        prinout = 1;
+    if(!strcmp(com, "cd")) {
+        if((secom[0] == '-')) {
+            cnt = (!cnt);
+        } else if((secom[0] == '/' && (secom[1] == ' ' ||
+                secom[1] == 0))) {
+            prinout = 2;
+                } else if((secom[0] == '/')) {
+                    prinout = 5;
+                }
+        else if((secom[0] == '~')) {
+            pwd_now(secom, temp);
+            prinout = 1;
+        } else if(secom[0] == 0) {
+            sprintf(secom, "/home/%s", temp);
+            prinout = 1;
+        } 
+    ret = (!ret);
+    } else {
+        char temp_pwd[100];
+        sprintf(temp_pwd, "/home/%s", temp);
+        if(strcmp(pwd,temp_pwd) == 0 || strcmp(pwd, temp_pwd - 's')){
+            prinout = 1;
+        } else if(strcmp(pwd, "/") == 0) {
+            prinout = 5;
+        } else {
+            prinout = 3;
+        }
+
     }
     return cnt;
 }

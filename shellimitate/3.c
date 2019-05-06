@@ -33,7 +33,7 @@ enum {
 };
 
 int sec_com(char *);//命令拆分
-int cd_lscom(char secom[][LEN]);//命令区分
+int cd_lscom(char *com);//命令区分
 int print_command(int concom);//输出
 
 int main() {
@@ -51,7 +51,7 @@ int main() {
         print_command(ret);
         fgets(com, LEN, stdin);
         len = sec_com(com);
-        ret = cd_lscom(secom);
+        ret = cd_lscom(com);
     } 
 
 	return 0;
@@ -77,10 +77,10 @@ int sec_com(char *com) {
     return len;
 }
 
-int cd_lscom(char scom[][LEN]) {
+int cd_lscom(char *com) {
     int concom = -1;
     if(strcmp(secom[0], "cd") == 0) {//如果命令是cd
-             if((strcmp(secom[1], "~") == 0 && secom[2] == "\0") || secom[1] == "\0") {
+             if((strcmp(secom[1], "~") == 0 && strcmp(secom[2], "\0")) || strcmp(secom[0], "\0")) {
                 sprintf(pwd, "/home/%s", username);
              } else if(strcmp(secom[1], "-") == 0) {
                  strcpy(tempwd[pwdflag], pwd);
@@ -94,7 +94,6 @@ int cd_lscom(char scom[][LEN]) {
             strcpy(tempwd[pwdflag], pwd);
             pwdflag = !pwdflag;
         }
-        strcpy(pwd, secom[1]);
     } else if(strcmp(secom[0], "ls") == 0) {//如果命令是ls
         if(!strcmp(secom[1], "-al")) {
             concom = LS_AL;
@@ -106,7 +105,6 @@ int cd_lscom(char scom[][LEN]) {
     } else{
         concom = CD;    
     }
-    printf("%s\n", secom[1]);
     return concom;
 }
 int print_command(int concom) {
