@@ -69,7 +69,6 @@ int main() {
 int sec_com(char *com) {
     int ret = 0, i, j = 0;
     int len = strlen(com) - 1;
-    printf("%d\n",len);
     for(i = 0; i < len; i++) {
         if(com[i] != ' ') {
             secom[j][ret++] = com[i];
