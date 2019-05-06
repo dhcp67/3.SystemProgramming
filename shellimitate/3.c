@@ -26,8 +26,6 @@ enum {
     ERROR,
     CD,
     CD_PREVIOUS,//cd - previous occasion
-    CD_home,
-    CD_HOME,
     LS,
     LS_AL
 };
@@ -48,6 +46,12 @@ int main() {
     char com[LEN];
     int len = 0, ret = CD;
     while(ret != EXIT) {
+        if(ret == CD) {
+            if(chdir(secom[1]) == 0){
+                memset(pwd, 0, LEN);
+                getcwd(pwd, LEN);
+            }
+        }
         print_command(ret);
         fgets(com, LEN, stdin);
         len = sec_com(com);
@@ -75,34 +79,31 @@ int sec_com(char *com) {
         j++;
     }
     len = j;
-    printf(" com = %s<-\nsecom[0] = %s<-\nsecom[1] = %s<-\n secom[3] = %s<-\n", com, secom[0], secom[1], secom[2]);//<<<----
     return len;
 }
 
 int cd_lscom(char *com) {
     int concom = -1;
     if(strcmp(secom[0], "cd") == 0) {//如果命令是cd
-             if((strcmp(secom[1], "~") == 0 && strcmp(secom[2], "\0")) || strcmp(secom[0], "\0")) {
-                sprintf(pwd, "/home/%s", username);
+             if((strcmp(secom[1], "~") == 0 && strcmp(secom[2], "\0")) || strcmp(secom[1], "\0") == 0) {
+                sprintf(secom[1], "/home/%s", username);
              } else if(strcmp(secom[1], "-") == 0) {
                  strcpy(tempwd[pwdflag], pwd);
                  pwdflag = !pwdflag;
-                 strcpy(pwd, tempwd[pwdflag]);
-             } else{
-                 strcpy(pwd, secom[1]);
+                 strcpy(secom[1], tempwd[pwdflag]);
              }
             concom = CD;
-        if(chdir(pwd) == 0 && strcmp(pwd, tempwd[pwdflag]) != 0) {
-            strcpy(tempwd[pwdflag], pwd);
-            pwdflag = !pwdflag;
-        }
+        //if(ii == 0 && strcmp(pwd, tempwd[pwdflag]) != 0) {
+        //    strcpy(tempwd[pwdflag], pwd);
+        //    pwdflag = !pwdflag;
+        //}
     } else if(strcmp(secom[0], "ls") == 0) {//如果命令是ls
         if(!strcmp(secom[1], "-al")) {
             concom = LS_AL;
         } else {
             concom = LS;
         }
-    } else if(strcmp(secom[0], "exit") == 0 && secom[1] == "\0") {
+    } else if(strcmp(secom[0], "exit") == 0 && strcmp(secom[1], "\0") == 0) {
         concom = EXIT;
     } else{
         concom = CD;    
@@ -119,6 +120,9 @@ int print_command(int concom) {
         } else {
             printf("$ ");
         }
+        
+    }
+    if(concom == LS_AL) {
         
     }
     for(int i = 0; i < LEN; i++) {
