@@ -39,7 +39,7 @@ int cd_lscom(char *com);//命令区分
 int print_command(int concom);//输出
 
 int main() {
-    //signal(SIGINT, SIG_IGN);
+    signal(SIGINT, SIG_IGN);
     struct passwd *p;
     p = getpwuid(getuid());
     strcpy(username, p->pw_name);
@@ -136,9 +136,52 @@ int print_command(int concom) {
                 }
             }
         }
-    printf("\n");
+        printf("\n");
     } else if(concom == LS_AL) {
+        struct stat *buf;
+        if(strcmp(secom[2], "\0") == 0) {
+            DIR *dir;
+            dir = opendir(".");
+            struct dirent *file;
+            while((file = readdir(dir)) != NULL) {
+                int ret = file->d_type;
+                switch (ret) {
+                case 1:
+                    printf("p");
+                    break;
+                case 2:
+                    printf("c");
+                    break;
+                case 4:
+                    printf("d");
+                    break;
+                case 6:
+                    printf("f");
+                    break;
+                case 8:
+                    printf("-");
+                    break;
+                case 10:
+                    printf("-");
+                    break;
+                default:
+                    printf("-");
+                }
+                char temp_name[LEN];
+                strcpy(temp_name, file->d_name);
+                printf(" %s\n", temp_name);
+                stat(temp_name, buf);
+                //printf("%d %s\n",buf->st_size, temp_name);
+                //printf("%s\n", file->d_name);
 
+            }
+        } else {
+            for(int i = 2; strcmp(secom[i], "\0") != 0;i++) {
+                if(stat(secom[i], buf) == 0) {
+                    printf("%s\n", secom[i]);
+                }
+            }
+        }
     }
     char home[LEN];
     sprintf(home,"/home/%s", username);
