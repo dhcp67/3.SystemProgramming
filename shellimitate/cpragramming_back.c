@@ -198,7 +198,7 @@ void ls_print(int concom) {
             printf("%c", tempchar = ((cnt / 1 == 4) ? 'r' : '-'));
             printf("%c", tempchar = ((cnt & 2) ? 'w' : '-'));
             printf("%c", tempchar = ((cnt & 1) ? 'x' : '-'));
-            printf(" %ld %s %s %s\n", buf.st_nlink, username, username, file->d_name);
+            printf(" %ld %s %s %ld %s\n", buf.st_nlink, username, username, buf.st_size, file->d_name);
             }
         } else {
             for(int i = 2; strcmp(secom[i], "\0") != 0;i++) {

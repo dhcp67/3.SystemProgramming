@@ -2,7 +2,4 @@
 
 
 
-
-
-![1557396509734](/home/lcnh/.config/Typora/typora-user-images/1557396509734.png)
-
+![](/home/lcnh/Pictures/2019-05-09 18-08-12屏幕截图.png)
