@@ -126,7 +126,7 @@ int print_command(int concom) {
             dir = opendir(".");
             struct dirent *file;
             while((file = readdir(dir)) != NULL) {
-                printf("%s ", file->d_name);
+                printf("%s\t", file->d_name);
 
             }
         } else {
@@ -139,10 +139,10 @@ int print_command(int concom) {
         printf("\n");
     } else if(concom == LS_AL) {
         struct stat *buf;
+        DIR *dir;
         if(strcmp(secom[2], "\0") == 0) {
-            DIR *dir;
-            dir = opendir(".");
             struct dirent *file;
+            dir = opendir(pwd);
             while((file = readdir(dir)) != NULL) {
                 int ret = file->d_type;
                 switch (ret) {
