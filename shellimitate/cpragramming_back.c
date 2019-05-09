@@ -31,12 +31,13 @@ enum {
     CD_YES,
     CD_PREVIOUS,//cd - previous occasion
     LS,
-    LS_AL
+    LS_AL,
 };
 
 int sec_com(char *);//命令拆分
 int cd_lscom(char *com);//命令区分
-int print_command(int concom);//输出
+int print_command(int );//输出
+void ls_print(int );
 
 int main() {
     signal(SIGINT, SIG_IGN);
@@ -119,11 +120,29 @@ int print_command(int concom) {
     if(concom == CD_ERROR) {
         printf("error\n");
     }
+    if(concom == LS || concom == LS_AL) {
+        ls_print(concom);
+    }
+    char home[LEN];
+    sprintf(home,"/home/%s", username);
+    printf("\033[32;1m%s@%s\033[0m:\033[34;1m%s\033[0m", username, hostname, pwd);
+    if(strcmp(username, "root") == 0) {
+        printf("# ");
+    } else {
+        printf("$ ");
+    }
+    for(int i = 0; i < LEN; i++) {
+        strcpy(secom[i],"\0");
+    }
+    return concom;
+}
+
+void ls_print(int concom) {
     if(concom == LS) {
         struct stat buf;
         if(strcmp(secom[1], "\0") == 0) {
             DIR *dir;
-            dir = opendir(".");
+            dir = opendir(pwd);
             struct dirent *file;
             while((file = readdir(dir)) != NULL) {
                 printf("%s\t", file->d_name);
@@ -138,7 +157,7 @@ int print_command(int concom) {
         }
         printf("\n");
     } else if(concom == LS_AL) {
-        struct stat *buf;
+        struct stat buf;
         DIR *dir;
         if(strcmp(secom[2], "\0") == 0) {
             struct dirent *file;
@@ -167,32 +186,26 @@ int print_command(int concom) {
                 default:
                     printf("-");
                 }
-                char temp_name[LEN];
-                strcpy(temp_name, file->d_name);
-                printf(" %s\n", temp_name);
-                stat(temp_name, buf);
-                //printf("%d %s\n",buf->st_size, temp_name);
-                //printf("%s\n", file->d_name);
-
+            int cnt = buf.st_mode;
+            char tempchar;
+            // debug <<<<<<<<<<-----------------------------
+            printf("%c", tempchar = ((cnt / 100 == 4) ? 'r' : '-'));
+            printf("%c", tempchar = ((cnt / 100 == 2) ? 'w' : '-'));
+            printf("%c", tempchar = ((cnt / 100 == 2) ? 'x' : '-'));
+            printf("%c", tempchar = ((cnt / 10 == 4) ? 'r' : '-'));
+            printf("%c", tempchar = ((cnt / 10 == 2) ? 'w' : '-'));
+            printf("%c", tempchar = ((cnt / 10 == 1) ? 'x' : '-'));
+            printf("%c", tempchar = ((cnt / 1 == 4) ? 'r' : '-'));
+            printf("%c", tempchar = ((cnt & 2) ? 'w' : '-'));
+            printf("%c", tempchar = ((cnt & 1) ? 'x' : '-'));
+            printf(" %ld %s %s %s\n", buf.st_nlink, username, username, file->d_name);
             }
         } else {
             for(int i = 2; strcmp(secom[i], "\0") != 0;i++) {
-                if(stat(secom[i], buf) == 0) {
-                    printf("%s\n", secom[i]);
+                if(stat(secom[i], &buf) == 0) {
+                    printf(" %s\n", secom[i]);
                 }
             }
         }
-    }
-    char home[LEN];
-    sprintf(home,"/home/%s", username);
-    printf("\033[32;1m%s@%s\033[0m:\033[34;1m%s\033[0m", username, hostname, pwd);
-    if(strcmp(username, "root") == 0) {
-        printf("# ");
-    } else {
-        printf("$ ");
-    }
-    for(int i = 0; i < LEN; i++) {
-        strcpy(secom[i],"\0");
-    }
-    return concom;
+    } 
 }
