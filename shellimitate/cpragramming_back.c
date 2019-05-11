@@ -14,6 +14,7 @@
 #include <unistd.h>
 #include <pwd.h>
 #include <string.h>
+#include <math.h>
 #define LEN 256
 
 char secom[LEN][LEN];
@@ -32,15 +33,16 @@ enum {
     CD_PREVIOUS,//cd - previous occasion
     LS,
     LS_AL,
+    CP
 };
 
 int sec_com(char *);//命令拆分
-int cd_lscom(char *com);//命令区分
+int cd_lscom(char *);//命令区分
 int print_command(int );//输出
 void ls_print(int );
 
 int main() {
-    signal(SIGINT, SIG_IGN);
+    //signal(SIGINT, SIG_IGN);
     struct passwd *p;
     p = getpwuid(getuid());
     strcpy(username, p->pw_name);
@@ -111,7 +113,9 @@ int cd_lscom(char *com) {
         } else {
             concom = LS;
         }
-    } else if(strcmp(secom[0], "exit") == 0 && strcmp(secom[1], "\0") == 0) {
+    } else if(strcmp(secom[0], "cp") == 0) {
+        concom = CP;
+    }else if(strcmp(secom[0], "exit") == 0 && strcmp(secom[1], "\0") == 0) {
         concom = EXIT;
     }
     return concom;
@@ -146,7 +150,6 @@ void ls_print(int concom) {
             struct dirent *file;
             while((file = readdir(dir)) != NULL) {
                 printf("%s\t", file->d_name);
-
             }
         } else {
             for(int i = 1; strcmp(secom[i], "\0") != 0;i++) {
@@ -163,6 +166,7 @@ void ls_print(int concom) {
             struct dirent *file;
             dir = opendir(pwd);
             while((file = readdir(dir)) != NULL) {
+                stat(file->d_name, &buf);
                 int ret = file->d_type;
                 switch (ret) {
                 case 1:
@@ -198,7 +202,8 @@ void ls_print(int concom) {
             printf("%c", tempchar = ((cnt / 1 == 4) ? 'r' : '-'));
             printf("%c", tempchar = ((cnt & 2) ? 'w' : '-'));
             printf("%c", tempchar = ((cnt & 1) ? 'x' : '-'));
-            printf(" %ld %s %s %ld %s\n", buf.st_nlink, username, username, buf.st_size, file->d_name);
+            int num = log10(buf.st_mtime);
+            printf(" %ld %s %s %6ld %ld %s\n", buf.st_nlink, username, username, buf.st_size, buf.st_mtime, file->d_name);
             }
         } else {
             for(int i = 2; strcmp(secom[i], "\0") != 0;i++) {
